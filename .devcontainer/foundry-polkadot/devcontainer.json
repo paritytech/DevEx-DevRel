@@ -1,0 +1,17 @@
+{
+  "name": "foundry-devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "esbenp.prettier-vscode",
+        "NomicFoundation.hardhat-solidity"
+      ]
+    }
+  },
+  "forwardPorts": [9944, 8545]
+}
