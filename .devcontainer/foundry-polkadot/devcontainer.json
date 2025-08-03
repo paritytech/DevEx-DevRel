@@ -1,5 +1,5 @@
 {
-  "name": "foundry-devcontainer",
+   "name": "Polkadot Foundry Development",
   "build": {
     "dockerfile": "Dockerfile"
   },
