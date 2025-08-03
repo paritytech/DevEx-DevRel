@@ -2,8 +2,9 @@
 
 ### 🧪 DevContainers
 
-[![Open Hardcut in DevContainer](https://img.shields.io/badge/Open%20Hardcut%20DevContainer-blue?logo=visualstudiocode&style=for-the-badge)](https://vscode.dev/devcontainer.json+https://raw.githubusercontent.com/paritytech/DevEx-DevRel/main/.devcontainer/hardcut-polkadot/devcontainer.json)
-[![Open Foundry in DevContainer](https://img.shields.io/badge/Open%20Foundry%20DevContainer-blue?logo=visualstudiocode&style=for-the-badge)](https://vscode.dev/devcontainer.json+https://raw.githubusercontent.com/paritytech/DevEx-DevRel/main/.devcontainer/foundry-polkadot/devcontainer.json)
+[![Open Hardcut in VS Code](https://img.shields.io/static/v1?logo=visualstudiocode&label=&message=Hardcut%20DevContainer&labelColor=2c2c32&color=007ACC&logoColor=007ACC)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/paritytech/DevEx-DevRel&workspaceFolder=.devcontainer/hardcut-polkadot)
+
+[![Open Foundry in VS Code](https://img.shields.io/static/v1?logo=visualstudiocode&label=&message=Foundry%20DevContainer&labelColor=2c2c32&color=007ACC&logoColor=007ACC)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/paritytech/DevEx-DevRel&workspaceFolder=.devcontainer/foundry-polkadot)
 
 ## [Link to dashboard](https://github.com/orgs/paritytech/projects/220/views/1)
 
