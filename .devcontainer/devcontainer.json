@@ -1,7 +1,0 @@
-{
-  "name": "Polkadot DevEx – Multi-Profile",
-  "workspaceMount": "source=${localWorkspaceFolder}/.devcontainer/${PROFILE},target=/workspaces,consistency=cached",
-  "workspaceFolder": "/workspaces",
-  "customizations": {},
-  "postCreateCommand": "echo 'Active profile: $PROFILE' > /workspace-profile.txt"
-}
