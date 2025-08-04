@@ -2,7 +2,13 @@
 
 ## Tools
 
-### 1. DevContainers for Smart Contract Development
+### 1. Cloud Development with Gitpod (No Local Setup Required!)
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/paritytech/DevEx-DevRel)
+
+Start developing Polkadot smart contracts instantly in your browser! Click the button above or see [GITPOD_README.md](GITPOD_README.md) for detailed instructions.
+
+### 2. DevContainers for Smart Contract Development (Local Development)
 
 Quickly get started with smart contract development using Docker containers. This setup allows you to run your smart contracts in a consistent environment across different machines. The setup provides both a foundry environment and a Hardhat environment. To use the setup:
 

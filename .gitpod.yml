@@ -1,0 +1,151 @@
+# Gitpod configuration for Polkadot smart contract development
+# This provides similar functionality to the DevContainers setup
+
+# Use a custom Docker image that includes all necessary tools
+image:
+  file: .gitpod.Dockerfile
+
+# Workspace configuration
+workspaceLocation: /workspace/DevEx-DevRel
+
+# Tasks to run on workspace start
+tasks:
+  - name: Polkadot Development Setup
+    init: |
+      echo "🚀 Initializing Polkadot Development Environment..."
+      echo ""
+      
+      # Check if project is already initialized
+      if [ -f "package.json" ] && [ -f "hardhat.config.ts" ]; then
+        echo "✅ Existing Hardhat project detected"
+        npm install
+      elif [ -f "foundry.toml" ]; then
+        echo "✅ Existing Foundry project detected"
+      else
+        echo "📦 No existing project detected. Choose your development environment:"
+        echo ""
+        echo "1) Hardhat - JavaScript/TypeScript based development"
+        echo "2) Foundry - Rust/Solidity based development"
+        echo ""
+        read -p "Enter your choice (1 or 2): " choice
+        
+        case $choice in
+          1)
+            echo "Setting up Hardhat environment..."
+            cp -r /workspace/template/hardhat/* . 2>/dev/null || true
+            cp /workspace/template/hardhat/.gitignore . 2>/dev/null || true
+            npm install
+            npm install --save-dev @parity/hardhat-polkadot@latest
+            echo "✅ Hardhat environment ready!"
+            ;;
+          2)
+            echo "Setting up Foundry environment..."
+            forge init --no-git --force
+            echo "✅ Foundry environment ready!"
+            ;;
+          *)
+            echo "Invalid choice. Please restart and choose 1 or 2."
+            exit 1
+            ;;
+        esac
+      fi
+      
+      # Download binaries
+      mkdir -p binaries
+      cd binaries
+      echo "📥 Downloading Polkadot binaries..."
+      wget -q -O substrate-node "http://releases.parity.io/substrate-node/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/substrate-node" || echo "Failed to download substrate-node"
+      wget -q -O eth-rpc "http://releases.parity.io/eth-rpc/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/eth-rpc" || echo "Failed to download eth-rpc"
+      chmod +x substrate-node eth-rpc
+      cd ..
+      
+      echo "✅ Environment setup complete!"
+      
+    command: |
+      # Setup keypair on startup
+      # Check if the private key is already set
+      if [ ! -s ~/.address.json ]; then
+        echo "⚠️  No private key found for deployment"
+        echo ""
+        read -s -p "Enter your Paseo private key (or press Enter to generate a new one): " SECRET_INPUT
+        echo ""
+        
+        if [ -z "$SECRET_INPUT" ]; then
+          echo "Generating new keypair..."
+          subkey generate --scheme ecdsa --network polkadot --output-type json > ~/.address.json
+        else
+          subkey inspect --scheme ecdsa "$SECRET_INPUT" --network polkadot --output-type json > ~/.address.json
+        fi
+      fi
+      
+      # Show the address
+      PUBLIC_ADDRESS=$(jq -r '.ss58PublicKey' ~/.address.json 2>/dev/null || echo "N/A")
+      SECRET=$(jq -r '.secretSeed' ~/.address.json 2>/dev/null || echo "N/A")
+      
+      # Only calculate EVM address if we have ethers available (Hardhat environment)
+      if [ -f "package.json" ] && npm list ethers &>/dev/null; then
+        EVM_ADDRESS=$(node -e 'const {Wallet}=require("ethers"); console.log(new Wallet(process.argv[1]).address)' "$SECRET" 2>/dev/null || echo "N/A")
+        
+        # Add keypair to hardhat config
+        echo "$SECRET" | npx hardhat vars set TEST_ACC_PRIVATE_KEY >/dev/null 2>&1 || true
+      else
+        EVM_ADDRESS="N/A (Install Hardhat to see EVM address)"
+      fi
+      
+      echo ""
+      echo "🎉 Welcome to Polkadot Smart Contract Development!"
+      echo "=================================================="
+      echo ""
+      echo "🔑 EVM Address: $EVM_ADDRESS"
+      echo "🔑 Substrate Address: $PUBLIC_ADDRESS"
+      echo ""
+      echo "⚠️  Note: Do not use this address for anything of real value"
+      echo ""
+      echo "💰 Get test tokens at: https://faucet.polkadot.io/?parachain=1111"
+      echo ""
+      
+      if [ -f "hardhat.config.ts" ]; then
+        echo "📚 Hardhat Commands:"
+        echo "  - Compile: npx hardhat compile"
+        echo "  - Test: npx hardhat test"
+        echo "  - Deploy: npx hardhat ignition deploy ignition/modules/MyToken.ts --network polkadotHubTestnet"
+      elif [ -f "foundry.toml" ]; then
+        echo "📚 Foundry Commands:"
+        echo "  - Build: forge build"
+        echo "  - Test: forge test"
+        echo "  - Deploy: forge create --rpc-url <RPC_URL> --private-key <PRIVATE_KEY> src/Counter.sol:Counter"
+      fi
+      echo ""
+      
+      # Keep the terminal open
+      exec bash
+
+# VS Code extensions
+vscode:
+  extensions:
+    - NomicFoundation.hardhat-solidity
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+    - rust-lang.rust-analyzer
+    - tamasfe.even-better-toml
+
+# Ports to expose
+ports:
+  - port: 9944
+    onOpen: ignore
+    visibility: private
+  - port: 8545
+    onOpen: ignore
+    visibility: private
+
+# GitHub integration
+github:
+  prebuilds:
+    # Enable prebuilds for all branches
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: false
+    addCheck: true
+    addComment: false
+    addBadge: true
