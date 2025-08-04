@@ -1,0 +1,6 @@
+# Ignore DevContainer files in Gitpod
+.devcontainer/
+.vscode/
+*.md
+docs/
+.github/

@@ -4,9 +4,17 @@ This repository now supports Gitpod for cloud-based development! You can start d
 
 ## Quick Start
 
-1. **Open in Gitpod**: Click the button below or visit `https://gitpod.io/#https://github.com/paritytech/DevEx-DevRel`
-
+1. **Open in Gitpod**: Use one of these methods:
+   
+   **Option A - Direct Browser Link (Recommended):**
+   ```
+   https://gitpod.io/#https://github.com/paritytech/DevEx-DevRel
+   ```
+   
+   **Option B - Gitpod Button:**
    [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/paritytech/DevEx-DevRel)
+   
+   **Important**: Make sure you're opening in browser mode, not desktop VSCode. If prompted to "Open in Desktop", choose "Continue in Browser" instead.
 
 2. **Choose Your Environment**: When Gitpod starts, you'll be prompted to choose between:
    - **Hardhat** (Option 1): JavaScript/TypeScript based development
@@ -62,14 +70,36 @@ If you want to switch from Hardhat to Foundry (or vice versa):
 
 ## Troubleshooting
 
-### "Docker version required" error
-This is expected - Gitpod doesn't support DevContainers. Use the Gitpod configuration instead.
+### Gitpod opens local VSCode instead of browser
+If Gitpod tries to open VSCode locally with SSH:
+
+1. **In the Gitpod dialog**, choose "Continue in Browser" instead of "Open in Desktop"
+2. **Check your Gitpod settings**: Go to https://gitpod.io/user/preferences and ensure "Open in Browser" is selected
+3. **Use the direct URL**: Always use the format `https://gitpod.io/#https://github.com/paritytech/DevEx-DevRel`
+4. **Clear browser cache** if the issue persists
+
+### "Docker version required" or "Reopen in DevContainer" error
+This happens when Gitpod tries to use DevContainer configuration. Solutions:
+
+1. **DO NOT** click "Reopen in DevContainer" - this won't work in Gitpod
+2. The repository includes `.gitpodignore` to prevent this, but if it still happens:
+   - Close the DevContainer prompt
+   - Use the terminal and file explorer directly
+   - The Gitpod configuration handles all setup automatically
 
 ### Slow performance
 The binaries run under x86_64 emulation on ARM machines, which may be slower. This is normal and doesn't affect functionality.
 
 ### Missing extensions
 All necessary VS Code extensions are automatically installed. If any are missing, check the `.gitpod.yml` file for the complete list.
+
+## Company/Team Gitpod Setup
+
+If using a company Gitpod account:
+
+1. Share this direct link with your team: `https://gitpod.io/#https://github.com/paritytech/DevEx-DevRel`
+2. Ensure team members select "Continue in Browser" when prompted
+3. Consider setting organization-wide preferences to default to browser mode
 
 ## Local Development
 
