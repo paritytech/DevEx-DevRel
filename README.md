@@ -16,6 +16,26 @@ code .
 
 b) Open the command palette (Ctrl+Shift+P) and select "Dev Containers: Reopen in Container". You will have 2 choices to choose from: foundry and hardhat. This will build the container and open the project in the container.
 
+c) As the Dev Container sets up, follow the instructions to configure a Paseo key-pair with tokens to deploy your contracts!
+
+Compile the contracts:
+
+```
+npx hardhat compile
+```
+
+Run tests:
+
+```
+npx hardhat test
+```
+
+Try deploying a test contract to the Paseo testnet:
+
+```
+npx hardhat ignition deploy ignition/modules/MyToken.ts --network polkadotHubTestnet
+```
+
 ## Resources
 
 1. [Link to dashboard](https://github.com/orgs/paritytech/projects/220/views/1)
