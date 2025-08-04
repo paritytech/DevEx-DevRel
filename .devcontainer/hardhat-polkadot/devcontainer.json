@@ -1,6 +1,6 @@
 {
   "name": "Polkadot Hardhat Development",
-  "image": "charleshetterich/polkadot-smartcontract-quickstart:0.1",
+  "image": "ghcr.io/utkarshbhardwaj007/polkadot-hardhat-quickstart:latest",
   "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
   "workspaceFolder": "/project",
   "containerEnv": {
