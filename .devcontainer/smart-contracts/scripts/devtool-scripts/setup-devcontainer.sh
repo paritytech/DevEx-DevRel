@@ -10,7 +10,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🚀 Polkadot Hardhat DevContainer Initializer${NC}"
+echo -e "${BLUE}🚀 Polkadot Smart Contract DevContainer Initializer${NC}"
 echo -e "${BLUE}============================================${NC}"
 
 # Determine project type (detect existing or prompt for (h)ardhat or (f)oundry)
