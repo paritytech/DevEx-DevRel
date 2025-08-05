@@ -7,7 +7,7 @@
     "WORKSPACE_DIR": "/workspace",
     "PROJECT_DIR": "/project"
   },
-  "postCreateCommand": "sudo chown -R $USER:$USER /home/$USER/.npm && bash -c 'devtools setup-devcontainer'",
+  "postCreateCommand": "bash -c 'devtools setup-devcontainer'",
   "postAttachCommand": "bash -c 'devtools setup-keypair'",
   "customizations": {
     "vscode": {
