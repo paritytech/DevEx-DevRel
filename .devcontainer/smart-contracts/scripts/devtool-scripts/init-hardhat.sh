@@ -1,7 +1,7 @@
 # Check if the mounted directory is empty or needs initialization
 if [ -z "$(ls -A $PROJECT_DIR 2>/dev/null)" ] || [ ! -f "$PROJECT_DIR/package.json" ]; then
-    echo -e "${YELLOW}📦 Initializing new Polkadot Hardhat project...${NC}"
-    echo -e "${GREEN}✓ Copying project template files...${NC}"
+    echo -e "${YELLOW}📦 Initializing new Polkadot Hardhat project...${STYLE_END}"
+    echo -e "${GREEN}✓ Copying project template files...${STYLE_END}"
 
     # Copy all template files
     
@@ -20,39 +20,39 @@ if [ -z "$(ls -A $PROJECT_DIR 2>/dev/null)" ] || [ ! -f "$PROJECT_DIR/package.js
     cd $PROJECT_DIR
     
     # Install dependencies
-    echo -e "${GREEN}✓ Installing dependencies (this may take a few minutes)...${NC}"
+    echo -e "${GREEN}✓ Installing dependencies (this may take a few minutes)...${STYLE_END}"
     npm install
     
     # Update @parity/hardhat-polkadot to latest version
-    echo -e "${GREEN}✓ Updating @parity/hardhat-polkadot to latest version...${NC}"
+    echo -e "${GREEN}✓ Updating @parity/hardhat-polkadot to latest version...${STYLE_END}"
     npm install --save-dev @parity/hardhat-polkadot@latest
     
-    echo -e "${GREEN}✨ Project initialized successfully!${NC}"
-    echo -e "${BLUE}You can now:${NC}"
-    echo -e "  - Create contracts in the ${GREEN}contracts/${NC} folder"
-    echo -e "  - Write tests in the ${GREEN}test/${NC} folder"
-    echo -e "  - Configure deployment in ${GREEN}ignition/modules/${NC}"
-    echo -e "  - Run ${GREEN}npx hardhat compile${NC} to compile contracts"
-    echo -e "  - Run ${GREEN}npx hardhat test${NC} to run tests"
+    echo -e "${GREEN}✨ Project initialized successfully!${STYLE_END}"
+    echo -e "${BLUE}You can now:${STYLE_END}"
+    echo -e "  - Create contracts in the ${GREEN}contracts/${STYLE_END} folder"
+    echo -e "  - Write tests in the ${GREEN}test/${STYLE_END} folder"
+    echo -e "  - Configure deployment in ${GREEN}ignition/modules/${STYLE_END}"
+    echo -e "  - Run ${GREEN}npx hardhat compile${STYLE_END} to compile contracts"
+    echo -e "  - Run ${GREEN}npx hardhat test${STYLE_END} to run tests"
     echo ""
 else
     # TODO! for existing projects we should still inject PolkaVM specific configurations into hardhat.config.*
-    echo -e "${GREEN}✓ Existing Hardhat project detected${NC}"
+    echo -e "${GREEN}✓ Existing Hardhat project detected${STYLE_END}"
     cd $PROJECT_DIR
     
     # Check and update @parity/hardhat-polkadot if needed
     if npm list @parity/hardhat-polkadot &>/dev/null; then
-        echo -e "${GREEN}✓ Checking for @parity/hardhat-polkadot updates...${NC}"
+        echo -e "${GREEN}✓ Checking for @parity/hardhat-polkadot updates...${STYLE_END}"
         # Get current and latest versions
         CURRENT_VERSION=$(npm list @parity/hardhat-polkadot --depth=0 --json 2>/dev/null | grep -oP '"version":\s*"\K[^"]+' | head -1)
         LATEST_VERSION=$(npm view @parity/hardhat-polkadot version 2>/dev/null)
         
         if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ] && [ -n "$LATEST_VERSION" ]; then
-            echo -e "${YELLOW}📦 Updating @parity/hardhat-polkadot from v${CURRENT_VERSION} to v${LATEST_VERSION}...${NC}"
+            echo -e "${YELLOW}📦 Updating @parity/hardhat-polkadot from v${CURRENT_VERSION} to v${LATEST_VERSION}...${STYLE_END}"
             npm install --save-dev @parity/hardhat-polkadot@latest
-            echo -e "${GREEN}✓ Updated successfully!${NC}"
+            echo -e "${GREEN}✓ Updated successfully!${STYLE_END}"
         else
-            echo -e "${GREEN}✓ @parity/hardhat-polkadot is already at the latest version (v${CURRENT_VERSION})${NC}"
+            echo -e "${GREEN}✓ @parity/hardhat-polkadot is already at the latest version (v${CURRENT_VERSION})${STYLE_END}"
         fi
     fi
 fi
