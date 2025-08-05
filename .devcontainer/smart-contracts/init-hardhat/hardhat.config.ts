@@ -1,31 +1,30 @@
-import { HardhatUserConfig, vars } from 'hardhat/config';
-import '@nomicfoundation/hardhat-toolbox';
-import '@parity/hardhat-polkadot';
+import { HardhatUserConfig, vars } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import "@parity/hardhat-polkadot";
 
 const config: HardhatUserConfig = {
-    solidity: '0.8.28',
+    solidity: "0.8.28",
     resolc: {
-        compilerSource: 'npm',
+        compilerSource: "npm",
         settings: {
             optimizer: {
-              enabled: true,
-              parameters: 'z',
-              fallbackOz: true,
-              runs: 200,
+                enabled: true,
+                parameters: "z",
+                fallbackOz: true,
+                runs: 200,
             },
-            standardJson: true,
         },
     },
     networks: {
         hardhat: {
             polkavm: true,
             nodeConfig: {
-                nodeBinaryPath: 'binaries/substrate-node',
+                nodeBinaryPath: "binaries/substrate-node",
                 rpcPort: 8000,
                 dev: true,
             },
             adapterConfig: {
-                adapterBinaryPath: 'binaries/eth-rpc',
+                adapterBinaryPath: "binaries/eth-rpc",
                 dev: true,
             },
         },
@@ -35,10 +34,10 @@ const config: HardhatUserConfig = {
         },
         polkadotHubTestnet: {
             polkavm: true,
-            url: 'https://testnet-passet-hub-eth-rpc.polkadot.io',
-            accounts: [vars.get('TEST_ACC_PRIVATE_KEY')],
+            url: "https://testnet-passet-hub-eth-rpc.polkadot.io",
+            accounts: [vars.get("TEST_ACC_PRIVATE_KEY")],
         },
-    }
+    },
 };
 
 export default config;
