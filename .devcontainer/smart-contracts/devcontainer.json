@@ -1,5 +1,5 @@
 {
-  "name": "Polkadot Hardhat Development",
+  "name": "Polkadot Smnart Contract Development",
   "image": "polkadot-smartcontract:debug",
   "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
   "workspaceFolder": "/project",

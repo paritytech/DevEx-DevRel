@@ -1,5 +1,5 @@
 # Check if the mounted directory is empty or needs initialization
-if [ -z "$(ls -A $PROJECT_DIR 2>/dev/null)" ] || [ ! -f "$PROJECT_DIR/package.json" ]; then
+if ! compgen -G "$PROJECT_DIR/hardhat.config.*" > /dev/null; then
     echo -e "${YELLOW}📦 Initializing new Polkadot Hardhat project...${STYLE_END}"
     echo -e "${GREEN}✓ Copying project template files...${STYLE_END}"
 
@@ -13,7 +13,7 @@ if [ -z "$(ls -A $PROJECT_DIR 2>/dev/null)" ] || [ ! -f "$PROJECT_DIR/package.js
     TMP="$(mktemp -d)"
     git clone --depth=1 --filter=blob:none --sparse -b "$BRANCH" "$REPO" "$TMP"
     git -C "$TMP" sparse-checkout set "$SUBDIR"
-    rsync -a "$TMP/$SUBDIR/" "$DEST/"
+    mv -r "$TMP/$SUBDIR/" "$DEST/"
     rm -rf "$TMP"
 
     # Change to project directory
