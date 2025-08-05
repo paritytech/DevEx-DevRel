@@ -1,18 +1,22 @@
 # Builder stage
 FROM mcr.microsoft.com/devcontainers/rust:1-bullseye AS builder
 WORKDIR /
+RUN apt-get update && apt install --assume-yes git clang curl libssl-dev protobuf-compiler
+
+ARG USER_HOME=/home/vscode
+USER vscode
+WORKDIR $USER_HOME
 
 # Polkadot-SDK version to build binaries from. TODO! always grab latest by default
 ARG SDK_BRANCH=polkadot-stable2503-6
 
 # Setup environment for building Polkadot SDK binaries
-RUN apt-get update && apt install --assume-yes git clang curl libssl-dev protobuf-compiler
 RUN rustup update stable && \
     rustup default stable && \
     rustup target add wasm32-unknown-unknown && \
     rustup component add rust-src
 RUN git clone -q --depth 1 -b $SDK_BRANCH https://github.com/paritytech/polkadot-sdk.git
-WORKDIR /polkadot-sdk
+WORKDIR $USER_HOME/polkadot-sdk
 
 # Build subkey binary
 RUN rustup toolchain install nightly --component rust-src && \
@@ -32,17 +36,21 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+USER vscode
+ARG USER_HOME=/home/vscode
+WORKDIR $USER_HOME
+
+
 # Install Foundry and Polkadot tools
 RUN curl -L https://raw.githubusercontent.com/paritytech/foundry-polkadot/refs/heads/master/foundryup/install | bash && \
-    /root/.foundry/bin/foundryup-polkadot
+    $USER_HOME/.foundry/bin/foundryup-polkadot
 
 # Copy subkey binary from builder stage
-COPY --from=builder /polkadot-sdk/target/release/subkey         /usr/local/bin/subkey
+COPY --from=builder $USER_HOME/polkadot-sdk/target/release/subkey         /usr/local/bin/subkey
 
 # Copy devtool scripts for container initialization and management
-COPY ./scripts/devtool-scripts /usr/local/bin/devtool-scripts
-COPY ./scripts/devtools.sh /usr/local/bin/devtools
-RUN chmod +x /usr/local/bin/devtools /usr/local/bin/devtool-scripts/*
+COPY --chmod=0755 ./scripts/devtool-scripts /usr/local/bin/devtool-scripts
+COPY --chmod=0755 ./scripts/devtools.sh /usr/local/bin/devtools
 
 # Expose default Hardhat port (if running a local node)
 EXPOSE 8545
