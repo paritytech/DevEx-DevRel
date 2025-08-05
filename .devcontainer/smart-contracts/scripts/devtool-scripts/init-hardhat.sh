@@ -1,12 +1,21 @@
 # Check if the mounted directory is empty or needs initialization
 if [ -z "$(ls -A $PROJECT_DIR 2>/dev/null)" ] || [ ! -f "$PROJECT_DIR/package.json" ]; then
     echo -e "${YELLOW}📦 Initializing new Polkadot Hardhat project...${NC}"
-    
-    # Copy all template files
     echo -e "${GREEN}✓ Copying project template files...${NC}"
-    cp -r $WORKSPACE_DIR/* $PROJECT_DIR/ 2>/dev/null || true
-    cp $WORKSPACE_DIR/.gitignore $PROJECT_DIR/ 2>/dev/null || true
+
+    # Copy all template files
     
+    # Fetch template project
+    REPO="https://github.com/paritytech/DevEx-DevRel.git"
+    BRANCH="charles/merge-devcontainers"
+    SUBDIR=".devcontainer/smart-contracts/init-hardhat"
+    DEST="$PROJECT_DIR"
+    TMP="$(mktemp -d)"
+    git clone --depth=1 --filter=blob:none --sparse -b "$BRANCH" "$REPO" "$TMP"
+    git -C "$TMP" sparse-checkout set "$SUBDIR"
+    rsync -a "$TMP/$SUBDIR/" "$DEST/"
+    rm -rf "$TMP"
+
     # Change to project directory
     cd $PROJECT_DIR
     
@@ -27,7 +36,8 @@ if [ -z "$(ls -A $PROJECT_DIR 2>/dev/null)" ] || [ ! -f "$PROJECT_DIR/package.js
     echo -e "  - Run ${GREEN}npx hardhat test${NC} to run tests"
     echo ""
 else
-    echo -e "${GREEN}✓ Existing project detected${NC}"
+    # TODO! for existing projects we should still inject PolkaVM specific configurations into hardhat.config.*
+    echo -e "${GREEN}✓ Existing Hardhat project detected${NC}"
     cd $PROJECT_DIR
     
     # Check and update @parity/hardhat-polkadot if needed

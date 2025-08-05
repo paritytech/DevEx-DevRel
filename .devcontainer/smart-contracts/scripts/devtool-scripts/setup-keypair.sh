@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # Text styling
-BOLD='\033[1m'
-ITALIC='\033[3m'
-BOLD_WHITE='\033[97m'
 BLUE='\033[34m'
 GREEN='\033[32m'
 RED='\033[31m'
