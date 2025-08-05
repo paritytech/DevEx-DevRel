@@ -33,7 +33,7 @@ fi
 # Capture keypair
 PUBLIC_ADDRESS=$(jq -r '.ss58PublicKey' ~/.address.json)
 SECRET=$(jq -r '.secretSeed' ~/.address.json)
-EVM_ADDRESS=$(node -e 'const {Wallet}=require("ethers"); console.log(new Wallet(process.argv[1]).address)' "$SECRET")
+EVM_ADDRESS=$(cast wallet address --private-key "$SECRET")
 
 # Add keypair to hardhat config | TODO! Check if we're in hardhat or foundry
 echo "$SECRET" | npx hardhat vars set TEST_ACC_PRIVATE_KEY >/dev/null 2>&1

@@ -1,7 +1,2 @@
-echo "setting up foundry!"
-
-curl -L https://raw.githubusercontent.com/paritytech/foundry-polkadot/refs/heads/master/foundryup/install | bash
-source /root/.bashrc
-foundryup-polkadot
-
+# TODO! check for existing project
 forge init --no-git --force

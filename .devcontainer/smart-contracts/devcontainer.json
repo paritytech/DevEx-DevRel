@@ -1,14 +1,14 @@
 {
   "name": "Polkadot Hardhat Development",
-  "image": "ghcr.io/utkarshbhardwaj007/polkadot-hardhat-quickstart:latest",
+  "image": "polkadot-smartcontract:debug",
   "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
   "workspaceFolder": "/project",
   "containerEnv": {
     "WORKSPACE_DIR": "/workspace",
     "PROJECT_DIR": "/project"
   },
-  "postCreateCommand": "devtools setup-devcontainer",
-  "postAttachCommand": "devtools setup-keypair",
+  "postCreateCommand": "bash -c 'devtools setup-devcontainer'",
+  "postAttachCommand": "bash -c 'devtools setup-keypair'",
   "remoteUser": "root",
   "customizations": {
     "vscode": {
