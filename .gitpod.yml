@@ -138,14 +138,5 @@ ports:
     onOpen: ignore
     visibility: private
 
-# GitHub integration
-github:
-  prebuilds:
-    # Enable prebuilds for all branches
-    master: true
-    branches: true
-    pullRequests: true
-    pullRequestsFromForks: false
-    addCheck: true
-    addComment: false
-    addBadge: true
+# GitHub prebuilds are now configured in repository settings
+# See: https://www.gitpod.io/docs/prebuilds
