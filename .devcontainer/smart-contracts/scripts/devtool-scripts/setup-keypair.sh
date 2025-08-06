@@ -22,7 +22,7 @@ EVM_ADDRESS=$(cast wallet address --private-key "$SECRET")
 
 # Add keypair to hardhat config | TODO! Check if we're in hardhat or foundry
 npx hardhat vars set TEST_ACC_PRIVATE_KEY $SECRET
-cast wallet import --private-key $SECRET paseo
+cast wallet import --private-key $SECRET paseo --unsafe-password ""
 
 # Output Message
 LINK_START='\033]8;;https://faucet.polkadot.io/?parachain=1111\033\\'
