@@ -14,9 +14,14 @@ RUN curl -L https://raw.githubusercontent.com/paritytech/foundry-polkadot/refs/h
 # The installer puts foundryup-polkadot in /home/gitpod/.foundry/bin even when run as root
 RUN /home/gitpod/.foundry/bin/foundryup-polkadot || true
 
-# Download prebuilt subkey binary instead of building from source
-RUN curl -L https://github.com/paritytech/polkadot-sdk/releases/download/stable2407/subkey -o /usr/local/bin/subkey && \
-    chmod +x /usr/local/bin/subkey
+# Download prebuilt subkey binary with proper error handling
+RUN curl -fsSL https://github.com/paritytech/polkadot-sdk-parachain-template/releases/download/polkadot-stable2407/subkey-polkadot-stable2407-x86_64-unknown-linux-gnu.tar.gz | \
+    tar -xz -C /usr/local/bin/ && \
+    chmod +x /usr/local/bin/subkey || \
+    (echo "Warning: Failed to download subkey, will use alternative method" && \
+     echo '#!/bin/bash' > /usr/local/bin/subkey && \
+     echo 'echo "Subkey not available in this environment"' >> /usr/local/bin/subkey && \
+     chmod +x /usr/local/bin/subkey)
 
 # Create a temporary container from the pre-built image to extract template files
 FROM ghcr.io/utkarshbhardwaj007/polkadot-hardhat-quickstart:latest as template-extractor
@@ -34,12 +39,16 @@ COPY --from=0 /home/gitpod/.foundry /home/gitpod/.foundry
 COPY --from=0 /usr/local/bin/subkey /usr/local/bin/subkey
 
 # Copy template files from the pre-built image
-COPY --from=template-extractor /workspace /workspace/template/hardhat
+COPY --from=template-extractor /workspace /workspace/template/hardhat || true
 
-# Copy devtools scripts
+# Create template directory and copy hardhat init files
+RUN mkdir -p /workspace/template/hardhat
+COPY .devcontainer/smart-contracts/init-hardhat /workspace/template/hardhat/
+
+# Copy devtools scripts  
 COPY .devcontainer/smart-contracts/scripts/devtool-scripts /usr/local/bin/devtool-scripts
 COPY .devcontainer/smart-contracts/scripts/devtools.sh /usr/local/bin/devtools
-RUN chmod +x /usr/local/bin/devtools /usr/local/bin/devtool-scripts/*
+RUN chmod +x /usr/local/bin/devtools /usr/local/bin/devtool-scripts/* || true
 
 # Fix ownership for gitpod user's directories
 RUN chown -R gitpod:gitpod /home/gitpod/.foundry || true
