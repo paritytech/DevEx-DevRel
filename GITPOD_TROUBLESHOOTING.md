@@ -76,6 +76,18 @@ https://gitpod.io/#https://github.com/paritytech/DevEx-DevRel/tree/utkbhar-dev
 
 3. Watch for the Docker build process in the terminal
 
+## Common Build Errors
+
+### foundryup-polkadot: not found
+If you see `/root/.foundry/bin/foundryup-polkadot: not found`:
+- This is because the installer puts files in `/home/gitpod/.foundry` even when run as root
+- The fix has been applied to use the correct paths
+
+### Docker build failures
+- Check the Gitpod logs for specific error messages
+- Ensure all COPY commands reference existing files
+- Verify that multi-stage builds use correct stage references
+
 ## Need More Help?
 
 - Check Gitpod workspace logs
