@@ -14,10 +14,12 @@ This repository supports Gitpod for cloud-based development! Start developing Po
    
    **Important**: Choose "Continue in Browser" instead of "Open in Desktop" when prompted.
 
-2. **Automatic Setup**: 
-   - Gitpod will automatically set up a Hardhat project by default
-   - You'll be prompted to enter a private key or generate a new one
-   - All dependencies and tools are pre-installed
+2. **Interactive Setup**: 
+   - When the workspace opens, you'll be prompted to choose between:
+     - **Hardhat** (Option h): JavaScript/TypeScript based development
+     - **Foundry** (Option f): Rust/Solidity based development
+   - You'll then be prompted to enter a private key or generate a new one
+   - All dependencies and tools will be installed automatically
 
 3. **Get Test Tokens**: 
    Visit [Paseo Smart Contract faucet](https://faucet.polkadot.io/?parachain=1111) and paste your EVM address.
@@ -25,24 +27,27 @@ This repository supports Gitpod for cloud-based development! Start developing Po
 ## Features
 
 ✅ Pre-configured development environment  
-✅ Automatic Hardhat project setup (default)  
+✅ Interactive choice between Hardhat and Foundry  
 ✅ Built-in Polkadot tools (subkey, substrate-node, eth-rpc)  
 ✅ VS Code extensions for Solidity development  
 ✅ Automatic keypair management  
+✅ Binary downloads for substrate-node and eth-rpc  
+✅ Template files and folder structure copying  
 
 ## Development Commands
 
-### Hardhat (Default):
+### For Hardhat:
 ```bash
 npx hardhat compile                     # Compile contracts
 npx hardhat test                        # Run tests
 npx hardhat ignition deploy ignition/modules/MyToken.ts --network polkadotHubTestnet
 ```
 
-### Switching to Foundry:
-If you prefer Foundry, delete all files, restart the workspace, and manually run:
+### For Foundry:
 ```bash
-forge init --no-git --force
+forge build                             # Build contracts
+forge test                              # Run tests
+forge create --rpc-url <RPC_URL> --private-key <KEY> src/Counter.sol:Counter
 ```
 
 ## Troubleshooting
@@ -62,7 +67,8 @@ forge init --no-git --force
 
 ## Notes
 
-- The default setup uses Hardhat for simplicity
+- You can choose between Hardhat and Foundry during setup
 - All tools run in a Linux AMD64 environment
 - Binaries are downloaded to the `binaries/` folder
 - Your keypair is stored in `~/.address.json`
+- The setup uses the same DevContainer scripts for consistency

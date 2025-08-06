@@ -23,22 +23,6 @@ tasks:
       
       cd $PROJECT_DIR
       
-      # Check if this is a fresh workspace
-      if [ -z "$(ls -A .)" ]; then
-        echo "📦 Setting up new project..."
-        
-        # Copy template files from the image
-        if [ -d "/workspace/contracts" ]; then
-          cp -r /workspace/* . 2>/dev/null || true
-          cp /workspace/.gitignore . 2>/dev/null || true
-        fi
-        
-        # Install dependencies
-        if [ -f "package.json" ]; then
-          npm install
-        fi
-      fi
-      
       # Run the interactive setup for project type selection
       echo ""
       echo "🚀 Polkadot Smart Contract Development"
@@ -60,17 +44,46 @@ tasks:
         case $choice in
           1)
             echo "Setting up Hardhat..."
-            # Hardhat is already set up from the image
+            echo "📦 Copying Hardhat template files..."
+            
+            # Copy specific files from /workspace (where Docker image has them)
+            # to the project directory, avoiding recursive issues
+            for file in package.json package-lock.json tsconfig.json hardhat.config.ts .gitignore README.md; do
+              if [ -f "/workspace/$file" ]; then
+                cp "/workspace/$file" . 2>/dev/null || true
+                echo "  ✓ Copied $file"
+              fi
+            done
+            
+            # Copy directories
+            for dir in contracts test ignition; do
+              if [ -d "/workspace/$dir" ]; then
+                cp -r "/workspace/$dir" . 2>/dev/null || true
+                echo "  ✓ Copied $dir/"
+              fi
+            done
+            
+            # Install dependencies if package.json was copied
+            if [ -f "package.json" ]; then
+              echo "📦 Installing dependencies..."
+              npm install
+            fi
             ;;
           2)
             echo "Setting up Foundry..."
-            # Clean up Hardhat files
-            rm -rf node_modules package*.json hardhat.config.ts contracts test ignition
-            # Initialize Foundry
+            # Initialize Foundry project
             forge init --no-git --force
             ;;
           *)
-            echo "Using default Hardhat setup..."
+            echo "Invalid choice. Using default Hardhat setup..."
+            # Copy Hardhat files as fallback
+            for file in package.json package-lock.json tsconfig.json hardhat.config.ts .gitignore; do
+              [ -f "/workspace/$file" ] && cp "/workspace/$file" . 2>/dev/null || true
+            done
+            for dir in contracts test ignition; do
+              [ -d "/workspace/$dir" ] && cp -r "/workspace/$dir" . 2>/dev/null || true
+            done
+            [ -f "package.json" ] && npm install
             ;;
         esac
       fi
