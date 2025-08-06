@@ -8,7 +8,7 @@
 
 Start developing Polkadot smart contracts instantly in your browser! 
 
-**⚠️ IMPORTANT**: When Gitpod opens, choose **"Continue in Browser"** (not "Open in Desktop"). See [gitpod-setup.md](gitpod-setup.md) for quick setup or [GITPOD_README.md](GITPOD_README.md) for detailed instructions.
+**⚠️ IMPORTANT**: When Gitpod opens, choose **"Continue in Browser"** (not "Open in Desktop"). See [GITPOD_README.md](GITPOD_README.md) for setup instructions.
 
 ### 2. DevContainers for Smart Contract Development (Local Development)
 
