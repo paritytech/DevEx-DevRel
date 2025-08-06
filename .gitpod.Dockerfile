@@ -21,11 +21,12 @@ RUN rustup target add wasm32-unknown-unknown && \
 RUN cargo install --force subkey --git https://github.com/paritytech/polkadot-sdk --tag polkadot-stable2503-6
 
 # Install foundryup-polkadot
-RUN curl -L https://raw.githubusercontent.com/paritytech/foundry-polkadot/refs/heads/master/foundryup/install | bash && \
-    /root/.foundry/bin/foundryup-polkadot
+RUN curl -L https://raw.githubusercontent.com/paritytech/foundry-polkadot/refs/heads/master/foundryup/install | bash
+# The installer puts foundryup-polkadot in /home/gitpod/.foundry/bin even when run as root
+RUN /home/gitpod/.foundry/bin/foundryup-polkadot || true
 
 # Add foundry to PATH
-ENV PATH="/root/.foundry/bin:$PATH"
+ENV PATH="/home/gitpod/.foundry/bin:$PATH"
 
 # Create a temporary container from the pre-built image to extract template files
 FROM ghcr.io/utkarshbhardwaj007/polkadot-hardhat-quickstart:latest as template-extractor
@@ -37,7 +38,7 @@ USER root
 
 # Copy all the installations from the first stage
 COPY --from=0 /root/.cargo /root/.cargo
-COPY --from=0 /root/.foundry /root/.foundry
+COPY --from=0 /home/gitpod/.foundry /home/gitpod/.foundry
 COPY --from=0 /usr/local/bin/subkey /usr/local/bin/subkey
 
 # Copy template files from the pre-built image
@@ -48,6 +49,9 @@ COPY .devcontainer/smart-contracts/scripts/devtool-scripts /usr/local/bin/devtoo
 COPY .devcontainer/smart-contracts/scripts/devtools.sh /usr/local/bin/devtools
 RUN chmod +x /usr/local/bin/devtools /usr/local/bin/devtool-scripts/*
 
+# Fix ownership for gitpod user's directories
+RUN chown -R gitpod:gitpod /home/gitpod/.foundry || true
+
 # Switch back to gitpod user
 USER gitpod
 
@@ -55,4 +59,4 @@ USER gitpod
 RUN echo 'source $HOME/.cargo/env' >> ~/.bashrc
 
 # Make tools available to gitpod user
-ENV PATH="/home/gitpod/.cargo/bin:/root/.foundry/bin:/root/.cargo/bin:$PATH"
+ENV PATH="/home/gitpod/.cargo/bin:/home/gitpod/.foundry/bin:/root/.cargo/bin:$PATH"
