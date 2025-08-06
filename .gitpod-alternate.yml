@@ -1,169 +1,55 @@
-# Alternative Gitpod configuration that tries to use devtools scripts
-# This uses the existing Hardhat DevContainer image with devtools
+# Alternative Gitpod configuration that uses devtools scripts
+# This assumes the Docker image contains devtools at /usr/local/bin/devtools
 
 # Use the pre-built Docker image
 image: ghcr.io/utkarshbhardwaj007/polkadot-hardhat-quickstart:latest
 
-# Workspace configuration
-workspaceLocation: /workspace/DevEx-DevRel
+# Workspace configuration - use /workspace directly
+workspaceLocation: /workspace
 
 # Tasks to run on workspace start
 tasks:
   - name: Polkadot Development Setup
     init: |
       echo "🚀 Preparing Polkadot development environment..."
-      # Create project directory if it doesn't exist
-      mkdir -p /workspace/DevEx-DevRel
-      cd /workspace/DevEx-DevRel
+      cd /workspace
       
     command: |
-      # Try to use devtools if available, otherwise use inline script
+      # This config expects devtools to be available in the image
       if [ -f /usr/local/bin/devtools ] && [ -f /usr/local/bin/devtool-scripts/setup-devcontainer.sh ]; then
-        echo "Using devtools for setup..."
-        export WORKSPACE_DIR="/workspace"
-        export PROJECT_DIR="/workspace/DevEx-DevRel"
+        echo "✅ Using devtools for setup..."
         
-        # Run the devcontainer setup script
+        # Handle template files backup for Gitpod
+        # The Docker image has template files in /workspace, but Gitpod also uses /workspace
+        # So we need to backup templates first
+        if [ -f /workspace/package.json ] && [ ! -f /workspace/.gitpod-backup-done ]; then
+          echo "📦 Backing up template files..."
+          mkdir -p /tmp/template-backup
+          cp -r /workspace/* /tmp/template-backup/ 2>/dev/null || true
+          cp /workspace/.gitignore /tmp/template-backup/ 2>/dev/null || true
+          touch /workspace/.gitpod-backup-done
+        fi
+        
+        # Set environment variables for devtools
+        # WORKSPACE_DIR is where template files are
+        # PROJECT_DIR is where user's project goes
+        export WORKSPACE_DIR="/tmp/template-backup"
+        export PROJECT_DIR="/workspace"
+        
+        # Run devcontainer setup (handles Hardhat/Foundry choice, file copying, etc.)
+        cd /workspace
         bash /usr/local/bin/devtools setup-devcontainer
         
-        # Then run keypair setup
+        # Run keypair setup (handles key generation properly)
         bash /usr/local/bin/devtools setup-keypair
+        
       else
-        # Fallback to inline setup if devtools not available
-        echo "Devtools not found, using inline setup..."
-        
-        # Set up environment variables
-        export WORKSPACE_DIR="/workspace"
-        export PROJECT_DIR="/workspace/DevEx-DevRel"
-        
-        cd $PROJECT_DIR
-        
-        # Interactive setup
+        echo "⚠️ ERROR: Devtools not found in the Docker image!"
+        echo "The image should contain:"
+        echo "  - /usr/local/bin/devtools"
+        echo "  - /usr/local/bin/devtool-scripts/"
         echo ""
-        echo "🚀 Polkadot Smart Contract Development"
-        echo "======================================"
-        
-        # Check if project already exists
-        if [ -f "hardhat.config.ts" ]; then
-          echo "✅ Existing Hardhat project detected"
-        elif [ -f "foundry.toml" ]; then
-          echo "✅ Existing Foundry project detected"
-        else
-          echo ""
-          echo "Choose your development framework:"
-          echo "1) Hardhat - JavaScript/TypeScript based"
-          echo "2) Foundry - Rust/Solidity based"
-          echo ""
-          read -p "Enter your choice (1 or 2): " choice
-          
-          case $choice in
-            1)
-              echo "Setting up Hardhat..."
-              echo "📦 Copying Hardhat template files..."
-              
-              # Copy specific files from /workspace
-              for file in package.json package-lock.json tsconfig.json hardhat.config.ts .gitignore README.md; do
-                if [ -f "/workspace/$file" ]; then
-                  cp "/workspace/$file" . 2>/dev/null || true
-                  echo "  ✓ Copied $file"
-                fi
-              done
-              
-              # Copy directories
-              for dir in contracts test ignition; do
-                if [ -d "/workspace/$dir" ]; then
-                  cp -r "/workspace/$dir" . 2>/dev/null || true
-                  echo "  ✓ Copied $dir/"
-                fi
-              done
-              
-              # Install dependencies
-              if [ -f "package.json" ]; then
-                echo "📦 Installing dependencies..."
-                npm install
-              fi
-              ;;
-            2)
-              echo "Setting up Foundry..."
-              forge init --no-git --force
-              ;;
-            *)
-              echo "Using default Hardhat setup..."
-              ;;
-          esac
-        fi
-        
-        # Download binaries
-        mkdir -p binaries
-        cd binaries
-        echo "📥 Downloading Polkadot binaries..."
-        wget -q -O substrate-node "http://releases.parity.io/substrate-node/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/substrate-node" || echo "Failed to download substrate-node"
-        wget -q -O eth-rpc "http://releases.parity.io/eth-rpc/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/eth-rpc" || echo "Failed to download eth-rpc"
-        chmod +x substrate-node eth-rpc
-        cd ..
-        
-        # Keypair setup
-        echo ""
-        if [ -s ~/.address.json ]; then
-          echo "✅ Paseo deployment keypair configured"
-        else
-          echo "⚠️  No private key found for deployment"
-          read -s -p "Paseo private key (leave blank to generate new): " SECRET_INPUT
-          echo ""
-          
-          if [ -z "$SECRET_INPUT" ]; then
-            if command -v subkey &> /dev/null; then
-              subkey generate --scheme ecdsa --network polkadot --output-type json > ~/.address.json
-            else
-              PRIVATE_KEY="0x$(openssl rand -hex 32)"
-              echo "{\"secretSeed\": \"$PRIVATE_KEY\", \"ss58PublicKey\": \"Generated\"}" > ~/.address.json
-            fi
-          else
-            if command -v subkey &> /dev/null; then
-              subkey inspect --scheme ecdsa "$SECRET_INPUT" --network polkadot --output-type json > ~/.address.json
-            else
-              echo "{\"secretSeed\": \"$SECRET_INPUT\", \"ss58PublicKey\": \"User provided\"}" > ~/.address.json
-            fi
-          fi
-        fi
-        
-        # Show keypair info
-        PUBLIC_ADDRESS=$(jq -r '.ss58PublicKey' ~/.address.json 2>/dev/null || echo "N/A")
-        SECRET=$(jq -r '.secretSeed' ~/.address.json 2>/dev/null || echo "N/A")
-        
-        if [ -f "package.json" ] && npm list ethers &>/dev/null 2>&1; then
-          EVM_ADDRESS=$(node -e 'const {Wallet}=require("ethers"); console.log(new Wallet(process.argv[1]).address)' "$SECRET" 2>/dev/null || echo "N/A")
-          echo "$SECRET" | npx hardhat vars set TEST_ACC_PRIVATE_KEY >/dev/null 2>&1 || true
-        else
-          EVM_ADDRESS="N/A"
-        fi
-        
-        # Welcome message
-        echo ""
-        echo "🎉 Welcome to Polkadot Smart Contract Development!"
-        echo "=================================================="
-        echo ""
-        echo "EVM Address: $EVM_ADDRESS"
-        echo "Substrate Address: $PUBLIC_ADDRESS"
-        echo ""
-        echo "💰 Get test tokens at: https://faucet.polkadot.io/?parachain=1111"
-        echo ""
-        
-        # Show commands
-        if [ -f "hardhat.config.ts" ]; then
-          echo "📚 Hardhat Commands:"
-          echo "  npx hardhat compile"
-          echo "  npx hardhat test"
-          echo "  npx hardhat ignition deploy ignition/modules/MyToken.ts --network polkadotHubTestnet"
-        elif [ -f "foundry.toml" ]; then
-          echo "📚 Foundry Commands:"
-          echo "  forge build"
-          echo "  forge test"
-          echo "  forge create --rpc-url <RPC_URL> --private-key <KEY> src/Counter.sol:Counter"
-        fi
-        echo ""
-        
-        # Keep terminal open
+        echo "Please verify the Docker image or use a different configuration."
         exec bash
       fi
 

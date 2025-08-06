@@ -1,0 +1,101 @@
+# Gitpod configuration for Foundry development
+# Based on the Foundry DevContainer setup
+
+# Build from the Foundry Dockerfile
+image:
+  file: .devcontainer/foundry-polkadot/Dockerfile
+
+# Workspace configuration - use /workspace directly
+workspaceLocation: /workspace
+
+# Tasks to run on workspace start
+tasks:
+  - name: Polkadot Foundry Development Setup
+    init: |
+      echo "🚀 Preparing Polkadot Foundry development environment..."
+      cd /workspace
+      
+    command: |
+      cd /workspace
+      
+      # Check if project already exists
+      if [ -f "foundry.toml" ]; then
+        echo "✅ Existing Foundry project detected"
+      else
+        echo "📦 Initializing new Foundry project..."
+        forge init --no-git --force
+      fi
+      
+      # Download Polkadot binaries if not already present
+      if [ ! -f /usr/local/bin/substrate-node ] || [ ! -f /usr/local/bin/eth-rpc ]; then
+        echo "📥 Binaries already installed in Docker image"
+      fi
+      
+      # Keypair setup using similar logic to devtools
+      echo ""
+      if [ -s ~/.address.json ]; then
+        echo "✅ Paseo deployment keypair configured"
+      else
+        echo "⚠️  No private key found for deployment"
+        read -s -p "Paseo private key (leave blank to generate new): " SECRET_INPUT
+        echo ""
+        
+        if [ -z "$SECRET_INPUT" ]; then
+          # Generate new keypair
+          PRIVATE_KEY="0x$(openssl rand -hex 32)"
+          echo "{\"secretSeed\": \"$PRIVATE_KEY\", \"ss58PublicKey\": \"Generated with openssl\"}" > ~/.address.json
+        else
+          echo "{\"secretSeed\": \"$SECRET_INPUT\", \"ss58PublicKey\": \"User provided\"}" > ~/.address.json
+        fi
+      fi
+      
+      # Show keypair info
+      PUBLIC_ADDRESS=$(jq -r '.ss58PublicKey' ~/.address.json 2>/dev/null || echo "N/A")
+      SECRET=$(jq -r '.secretSeed' ~/.address.json 2>/dev/null || echo "N/A")
+      
+      # For Foundry, we use cast to manage keys
+      if command -v cast &> /dev/null && [ "$SECRET" != "N/A" ]; then
+        EVM_ADDRESS=$(cast wallet address --private-key "$SECRET" 2>/dev/null || echo "N/A")
+      else
+        EVM_ADDRESS="N/A"
+      fi
+      
+      # Welcome message
+      echo ""
+      echo "🎉 Welcome to Polkadot Foundry Development!"
+      echo "==========================================="
+      echo ""
+      echo "EVM Address: $EVM_ADDRESS"
+      echo "Substrate Address: $PUBLIC_ADDRESS"
+      echo ""
+      echo "💰 Get test tokens at: https://faucet.polkadot.io/?parachain=1111"
+      echo ""
+      
+      # Show Foundry commands
+      echo "📚 Foundry Commands:"
+      echo "  forge build               - Build contracts"
+      echo "  forge test                - Run tests"
+      echo "  forge create              - Deploy contracts"
+      echo "  cast send                 - Send transactions"
+      echo "  anvil                     - Start local testnet"
+      echo ""
+      
+      # Keep terminal open
+      exec bash
+
+# VS Code extensions
+vscode:
+  extensions:
+    - rust-lang.rust-analyzer
+    - tamasfe.even-better-toml
+    - esbenp.prettier-vscode
+    - NomicFoundation.hardhat-solidity
+
+# Ports to expose
+ports:
+  - port: 9944
+    onOpen: ignore
+    visibility: private
+  - port: 8545
+    onOpen: ignore
+    visibility: private
