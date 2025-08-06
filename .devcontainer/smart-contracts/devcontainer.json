@@ -1,10 +1,11 @@
 {
-  "name": "Polkadot Smnart Contract Development",
-  "image": "polkadot-smartcontract:debug",
+  "name": "Polkadot Smart Contract Development",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
   "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
   "workspaceFolder": "/project",
   "containerEnv": {
-    "WORKSPACE_DIR": "/workspace",
     "PROJECT_DIR": "/project"
   },
   "postCreateCommand": "bash -c 'devtools setup-devcontainer'",
