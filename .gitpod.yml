@@ -12,16 +12,12 @@ workspaceLocation: /workspace/DevEx-DevRel
 tasks:
   - name: Polkadot Development Setup
     init: |
-      # Run setup-devcontainer (same as DevContainer postCreateCommand)
-      export WORKSPACE_DIR="/workspace"
-      export PROJECT_DIR="/workspace/DevEx-DevRel"
-      bash /usr/local/bin/devtools setup-devcontainer || true
+      # Run non-interactive setup for Gitpod
+      bash /usr/local/bin/gitpod-setup
       
     command: |
-      # Run keypair setup automatically (same as DevContainer postAttachCommand)
-      export WORKSPACE_DIR="/workspace"
-      export PROJECT_DIR="/workspace/DevEx-DevRel"
-      bash /usr/local/bin/devtools setup-keypair || true
+      # Run keypair setup with better error handling
+      bash /usr/local/bin/gitpod-setup-keypair
 
 # VS Code extensions
 vscode:
