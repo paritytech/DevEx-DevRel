@@ -48,7 +48,8 @@ COPY .devcontainer/smart-contracts/init-hardhat /workspace/template/hardhat/
 # Copy devtools scripts  
 COPY .devcontainer/smart-contracts/scripts/devtool-scripts /usr/local/bin/devtool-scripts
 COPY .devcontainer/smart-contracts/scripts/devtools.sh /usr/local/bin/devtools
-RUN chmod +x /usr/local/bin/devtools /usr/local/bin/devtool-scripts/* || true
+COPY .gitpod/init-keypair.sh /usr/local/bin/init-keypair
+RUN chmod +x /usr/local/bin/devtools /usr/local/bin/devtool-scripts/* /usr/local/bin/init-keypair || true
 
 # Fix ownership for gitpod user's directories
 RUN chown -R gitpod:gitpod /home/gitpod/.foundry || true

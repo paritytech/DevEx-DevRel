@@ -77,28 +77,16 @@ tasks:
       echo "✅ Environment setup complete!"
       
     command: |
-      echo ""
-      echo "🎉 Welcome to Polkadot Smart Contract Development!"
-      echo "=================================================="
-      echo ""
-      echo "📚 Available Commands:"
-      echo ""
-      if [ -f "hardhat.config.ts" ]; then
-        echo "Hardhat Commands:"
-        echo "  npx hardhat compile"
-        echo "  npx hardhat test"
-        echo "  npx hardhat ignition deploy ignition/modules/MyToken.ts --network polkadotHubTestnet"
-      elif [ -f "foundry.toml" ]; then
-        echo "Foundry Commands:"
-        echo "  forge build"
-        echo "  forge test"
-        echo "  forge create --rpc-url <RPC_URL> --private-key <PRIVATE_KEY> src/Counter.sol:Counter"
-      else
-        echo "Initialize a project first by running the setup task"
+      # Run keypair setup automatically (similar to DevContainer postAttachCommand)
+      # Try devtools first, then fallback to init-keypair
+      if [ -f /usr/local/bin/devtools ] && [ -f /usr/local/bin/devtool-scripts/setup-keypair.sh ]; then
+        bash /usr/local/bin/devtools setup-keypair
+      elif [ -f /usr/local/bin/init-keypair ]; then
+        bash /usr/local/bin/init-keypair
       fi
-      echo ""
-      echo "💰 Get test tokens at: https://faucet.polkadot.io/?parachain=1111"
-      echo ""
+      
+      # The above scripts will show the welcome message and keypair info
+      # Just exec bash to keep terminal open
       exec bash
 
 # VS Code extensions
