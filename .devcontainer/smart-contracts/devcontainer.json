@@ -12,8 +12,10 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "NomicFoundation.hardhat-solidity",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
         "esbenp.prettier-vscode",
+        "NomicFoundation.hardhat-solidity",
         "dbaeumer.vscode-eslint"
       ],
       "settings": {
