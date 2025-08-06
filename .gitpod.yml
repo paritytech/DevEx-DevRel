@@ -12,82 +12,16 @@ workspaceLocation: /workspace/DevEx-DevRel
 tasks:
   - name: Polkadot Development Setup
     init: |
-      echo "🚀 Initializing Polkadot Development Environment..."
-      echo ""
-      
-      # Check if project is already initialized
-      if [ -f "package.json" ] && [ -f "hardhat.config.ts" ]; then
-        echo "✅ Existing Hardhat project detected"
-        npm install
-      elif [ -f "foundry.toml" ]; then
-        echo "✅ Existing Foundry project detected"
-      else
-        echo "📦 No existing project detected. Choose your development environment:"
-        echo ""
-        echo "1) Hardhat - JavaScript/TypeScript based development"
-        echo "2) Foundry - Rust/Solidity based development"
-        echo ""
-        read -p "Enter your choice (1 or 2): " choice
-        
-        case $choice in
-          1)
-            echo "Setting up Hardhat environment..."
-            # Copy template files if they exist
-            if [ -d "/workspace/template/hardhat" ]; then
-              echo "Using template files..."
-              cp -r /workspace/template/hardhat/* . 2>/dev/null || true
-              cp /workspace/template/hardhat/.gitignore . 2>/dev/null || true
-            fi
-            
-            # Create minimal package.json if needed
-            if [ ! -f "package.json" ]; then
-              npm init -y
-            fi
-            
-            # Install dependencies
-            npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox @parity/hardhat-polkadot@latest typescript @types/node @openzeppelin/contracts
-            
-            # Create basic project structure
-            mkdir -p contracts test ignition/modules
-            
-            echo "✅ Hardhat environment ready!"
-            echo "📝 Run 'npx hardhat init' to complete setup if needed"
-            ;;
-          2)
-            echo "Setting up Foundry environment..."
-            forge init --no-git --force
-            echo "✅ Foundry environment ready!"
-            ;;
-          *)
-            echo "Invalid choice. Please restart and choose 1 or 2."
-            exit 1
-            ;;
-        esac
-      fi
-      
-      # Download binaries
-      mkdir -p binaries
-      cd binaries
-      echo "📥 Downloading Polkadot binaries..."
-      wget -q -O substrate-node "http://releases.parity.io/substrate-node/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/substrate-node" || echo "Failed to download substrate-node"
-      wget -q -O eth-rpc "http://releases.parity.io/eth-rpc/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/eth-rpc" || echo "Failed to download eth-rpc"
-      chmod +x substrate-node eth-rpc
-      cd ..
-      
-      echo "✅ Environment setup complete!"
+      # Run setup-devcontainer (same as DevContainer postCreateCommand)
+      export WORKSPACE_DIR="/workspace"
+      export PROJECT_DIR="/workspace/DevEx-DevRel"
+      bash /usr/local/bin/devtools setup-devcontainer || true
       
     command: |
-      # Run keypair setup automatically (similar to DevContainer postAttachCommand)
-      # Try devtools first, then fallback to init-keypair
-      if [ -f /usr/local/bin/devtools ] && [ -f /usr/local/bin/devtool-scripts/setup-keypair.sh ]; then
-        bash /usr/local/bin/devtools setup-keypair
-      elif [ -f /usr/local/bin/init-keypair ]; then
-        bash /usr/local/bin/init-keypair
-      fi
-      
-      # The above scripts will show the welcome message and keypair info
-      # Just exec bash to keep terminal open
-      exec bash
+      # Run keypair setup automatically (same as DevContainer postAttachCommand)
+      export WORKSPACE_DIR="/workspace"
+      export PROJECT_DIR="/workspace/DevEx-DevRel"
+      bash /usr/local/bin/devtools setup-keypair || true
 
 # VS Code extensions
 vscode:
