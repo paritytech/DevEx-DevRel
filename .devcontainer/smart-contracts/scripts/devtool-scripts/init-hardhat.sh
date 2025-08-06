@@ -7,13 +7,12 @@ if ! compgen -G "$PROJECT_DIR/hardhat.config.*" > /dev/null; then
     
     # Fetch template project
     REPO="https://github.com/paritytech/DevEx-DevRel.git"
-    BRANCH="charles/merge-devcontainers"
     SUBDIR=".devcontainer/smart-contracts/init-hardhat"
     DEST="$PROJECT_DIR"
     TMP="$(mktemp -d)"
-    git clone --depth=1 --filter=blob:none --sparse -b "$BRANCH" "$REPO" "$TMP"
+    git clone --depth=1 --filter=blob:none --sparse "$REPO" "$TMP"
     git -C "$TMP" sparse-checkout set "$SUBDIR"
-    mv -r "$TMP/$SUBDIR/" "$DEST/"
+    cp -a "$TMP/$SUBDIR/." "$DEST/"
     rm -rf "$TMP"
 
     # Change to project directory

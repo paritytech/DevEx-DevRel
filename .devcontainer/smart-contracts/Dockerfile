@@ -1,5 +1,5 @@
 # Builder stage
-FROM mcr.microsoft.com/devcontainers/rust:1-bullseye AS builder
+FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/rust:1-bullseye AS builder
 WORKDIR /
 RUN apt-get update && apt install --assume-yes git clang curl libssl-dev protobuf-compiler
 
@@ -23,7 +23,7 @@ RUN rustup toolchain install nightly --component rust-src && \
     cargo +nightly build --release --package subkey
 
 # Final image
-FROM mcr.microsoft.com/devcontainers/base:bullseye
+FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/base:bullseye
 
 # User project mounts here
 WORKDIR /project

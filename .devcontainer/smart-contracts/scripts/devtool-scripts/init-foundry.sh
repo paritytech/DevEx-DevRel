@@ -1,4 +1,3 @@
-# TODO! check for existing project
 if ! compgen -G "$PROJECT_DIR/foundry.toml" > /dev/null; then
    forge init --no-git --force
 else
