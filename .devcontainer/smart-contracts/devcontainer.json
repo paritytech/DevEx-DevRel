@@ -1,20 +1,21 @@
 {
-  "name": "Polkadot Hardhat Development",
-  "image": "ghcr.io/utkarshbhardwaj007/polkadot-hardhat-quickstart:latest",
+  "name": "Polkadot Smnart Contract Development",
+  "image": "polkadot-smartcontract:debug",
   "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
   "workspaceFolder": "/project",
   "containerEnv": {
     "WORKSPACE_DIR": "/workspace",
     "PROJECT_DIR": "/project"
   },
-  "postCreateCommand": "devtools setup-devcontainer",
-  "postAttachCommand": "devtools setup-keypair",
-  "remoteUser": "root",
+  "postCreateCommand": "bash -c 'devtools setup-devcontainer'",
+  "postAttachCommand": "bash -c 'devtools setup-keypair'",
   "customizations": {
     "vscode": {
       "extensions": [
-        "NomicFoundation.hardhat-solidity",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
         "esbenp.prettier-vscode",
+        "NomicFoundation.hardhat-solidity",
         "dbaeumer.vscode-eslint"
       ],
       "settings": {
