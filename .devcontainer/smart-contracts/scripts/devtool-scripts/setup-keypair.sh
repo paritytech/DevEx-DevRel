@@ -21,7 +21,8 @@ SECRET=$(jq -r '.secretSeed' ~/.address.json)
 EVM_ADDRESS=$(cast wallet address --private-key "$SECRET")
 
 # Add keypair to hardhat config | TODO! Check if we're in hardhat or foundry
-echo "$SECRET" | npx hardhat vars set TEST_ACC_PRIVATE_KEY >/dev/null 2>&1
+npx hardhat vars set TEST_ACC_PRIVATE_KEY $SECRET
+cast wallet import --private-key $SECRET paseo
 
 # Output Message
 LINK_START='\033]8;;https://faucet.polkadot.io/?parachain=1111\033\\'
