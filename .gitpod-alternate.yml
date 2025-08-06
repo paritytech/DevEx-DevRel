@@ -1,0 +1,49 @@
+# Gitpod configuration for Polkadot smart contract development
+# This provides similar functionality to the DevContainers setup
+
+# Use a custom Docker image that includes all necessary tools
+image:
+  file: .gitpod.Dockerfile
+
+# Workspace configuration
+workspaceLocation: /workspace/DevEx-DevRel
+
+# Tasks to run on workspace start
+tasks:
+  - name: Polkadot Development Setup
+    init: |
+      echo "Preparing Polkadot development environment..."
+      # The init task runs during prebuild and is non-interactive
+      # We'll do the actual setup in the command task
+      
+    command: |
+      # Run the full interactive setup when workspace opens
+      export WORKSPACE_DIR="/workspace"
+      export PROJECT_DIR="/workspace/DevEx-DevRel"
+      
+      # Run setup-devcontainer interactively (prompts for Hardhat or Foundry)
+      bash /usr/local/bin/devtools setup-devcontainer
+      
+      # Then run keypair setup (prompts for private key)
+      bash /usr/local/bin/devtools setup-keypair
+
+# VS Code extensions
+vscode:
+  extensions:
+    - NomicFoundation.hardhat-solidity
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+    - rust-lang.rust-analyzer
+    - tamasfe.even-better-toml
+
+# Ports to expose
+ports:
+  - port: 9944
+    onOpen: ignore
+    visibility: private
+  - port: 8545
+    onOpen: ignore
+    visibility: private
+
+# GitHub prebuilds are now configured in repository settings
+# See: https://www.gitpod.io/docs/prebuilds
