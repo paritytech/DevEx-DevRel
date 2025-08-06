@@ -38,8 +38,8 @@ RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
 COPY --from=0 /home/gitpod/.foundry /home/gitpod/.foundry
 COPY --from=0 /usr/local/bin/subkey /usr/local/bin/subkey
 
-# Copy template files from the pre-built image
-COPY --from=template-extractor /workspace /workspace/template/hardhat || true
+# Copy template files from the pre-built image (if available)
+COPY --from=template-extractor /workspace /workspace/template/hardhat/
 
 # Create template directory and copy hardhat init files
 RUN mkdir -p /workspace/template/hardhat

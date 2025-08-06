@@ -32,95 +32,26 @@ tasks:
         case $choice in
           1)
             echo "Setting up Hardhat environment..."
-            # Try to copy template files if they exist
+            # Copy template files if they exist
             if [ -d "/workspace/template/hardhat" ]; then
               echo "Using template files..."
               cp -r /workspace/template/hardhat/* . 2>/dev/null || true
               cp /workspace/template/hardhat/.gitignore . 2>/dev/null || true
             fi
             
-            # If no package.json was copied, create a minimal one
+            # Create minimal package.json if needed
             if [ ! -f "package.json" ]; then
-              echo "Creating package.json..."
               npm init -y
             fi
             
             # Install dependencies
-            npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox @parity/hardhat-polkadot@latest typescript @types/node
-            
-            # Create hardhat.config.ts if it doesn't exist
-            if [ ! -f "hardhat.config.ts" ]; then
-              echo "Creating hardhat.config.ts..."
-              cat > hardhat.config.ts << 'EOF'
-import { HardhatUserConfig, vars } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
-import "@parity/hardhat-polkadot";
-
-const config: HardhatUserConfig = {
-    solidity: "0.8.28",
-    resolc: {
-        compilerSource: "npm",
-        settings: {
-            optimizer: {
-                enabled: true,
-                parameters: "z",
-                fallbackOz: true,
-                runs: 200,
-            },
-        },
-    },
-    networks: {
-        hardhat: {
-            polkavm: true,
-            nodeConfig: {
-                nodeBinaryPath: "binaries/substrate-node",
-                rpcPort: 8000,
-                dev: true,
-            },
-            adapterConfig: {
-                adapterBinaryPath: "binaries/eth-rpc",
-                dev: true,
-            },
-        },
-        localNode: {
-            polkavm: true,
-            url: "http://127.0.0.1:8545",
-        },
-        polkadotHubTestnet: {
-            polkavm: true,
-            url: "https://testnet-passet-hub-eth-rpc.polkadot.io",
-            accounts: [vars.get("TEST_ACC_PRIVATE_KEY", "")],
-        },
-    },
-};
-
-export default config;
-EOF
-            fi
+            npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox @parity/hardhat-polkadot@latest typescript @types/node @openzeppelin/contracts
             
             # Create basic project structure
             mkdir -p contracts test ignition/modules
             
-            # Create a sample contract if none exists
-            if [ ! -f "contracts/MyToken.sol" ]; then
-              cat > contracts/MyToken.sol << 'EOF'
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-contract MyToken is ERC20 {
-    constructor(uint256 initialSupply) ERC20("MyToken", "MTK") {
-        _mint(msg.sender, initialSupply);
-    }
-}
-EOF
-            fi
-            
-            # Install OpenZeppelin contracts
-            npm install --save-dev @openzeppelin/contracts
-            
             echo "✅ Hardhat environment ready!"
+            echo "📝 Run 'npx hardhat init' to complete setup if needed"
             ;;
           2)
             echo "Setting up Foundry environment..."
@@ -146,78 +77,28 @@ EOF
       echo "✅ Environment setup complete!"
       
     command: |
-      # Setup keypair on startup
-      # Check if the private key is already set
-      if [ ! -s ~/.address.json ]; then
-        echo "⚠️  No private key found for deployment"
-        echo ""
-        read -s -p "Enter your Paseo private key (or press Enter to generate a new one): " SECRET_INPUT
-        echo ""
-        
-        if [ -z "$SECRET_INPUT" ]; then
-          echo "Generating new keypair..."
-          # Check if subkey is available and working
-          if command -v subkey &> /dev/null && subkey --version &> /dev/null; then
-            subkey generate --scheme ecdsa --network polkadot --output-type json > ~/.address.json
-          else
-            echo "Note: Subkey not available, generating keypair with alternative method..."
-            # Generate a random private key using Node.js
-            node -e '
-              const crypto = require("crypto");
-              const privateKey = "0x" + crypto.randomBytes(32).toString("hex");
-              const output = {
-                secretSeed: privateKey,
-                ss58PublicKey: "Generated offline - use private key for transactions"
-              };
-              console.log(JSON.stringify(output, null, 2));
-            ' > ~/.address.json
-          fi
-        else
-          # Use the provided key
-          echo "{\"secretSeed\": \"$SECRET_INPUT\", \"ss58PublicKey\": \"User provided key\"}" > ~/.address.json
-        fi
-      fi
-      
-      # Show the address
-      PUBLIC_ADDRESS=$(jq -r '.ss58PublicKey' ~/.address.json 2>/dev/null || echo "N/A")
-      SECRET=$(jq -r '.secretSeed' ~/.address.json 2>/dev/null || echo "N/A")
-      
-      # Only calculate EVM address if we have ethers available (Hardhat environment)
-      if [ -f "package.json" ] && npm list ethers &>/dev/null; then
-        EVM_ADDRESS=$(node -e 'const {Wallet}=require("ethers"); console.log(new Wallet(process.argv[1]).address)' "$SECRET" 2>/dev/null || echo "N/A")
-        
-        # Add keypair to hardhat config
-        echo "$SECRET" | npx hardhat vars set TEST_ACC_PRIVATE_KEY >/dev/null 2>&1 || true
-      else
-        EVM_ADDRESS="N/A (Install Hardhat to see EVM address)"
-      fi
-      
       echo ""
       echo "🎉 Welcome to Polkadot Smart Contract Development!"
       echo "=================================================="
       echo ""
-      echo "🔑 EVM Address: $EVM_ADDRESS"
-      echo "🔑 Substrate Address: $PUBLIC_ADDRESS"
+      echo "📚 Available Commands:"
       echo ""
-      echo "⚠️  Note: Do not use this address for anything of real value"
+      if [ -f "hardhat.config.ts" ]; then
+        echo "Hardhat Commands:"
+        echo "  npx hardhat compile"
+        echo "  npx hardhat test"
+        echo "  npx hardhat ignition deploy ignition/modules/MyToken.ts --network polkadotHubTestnet"
+      elif [ -f "foundry.toml" ]; then
+        echo "Foundry Commands:"
+        echo "  forge build"
+        echo "  forge test"
+        echo "  forge create --rpc-url <RPC_URL> --private-key <PRIVATE_KEY> src/Counter.sol:Counter"
+      else
+        echo "Initialize a project first by running the setup task"
+      fi
       echo ""
       echo "💰 Get test tokens at: https://faucet.polkadot.io/?parachain=1111"
       echo ""
-      
-      if [ -f "hardhat.config.ts" ]; then
-        echo "📚 Hardhat Commands:"
-        echo "  - Compile: npx hardhat compile"
-        echo "  - Test: npx hardhat test"
-        echo "  - Deploy: npx hardhat ignition deploy ignition/modules/MyToken.ts --network polkadotHubTestnet"
-      elif [ -f "foundry.toml" ]; then
-        echo "📚 Foundry Commands:"
-        echo "  - Build: forge build"
-        echo "  - Test: forge test"
-        echo "  - Deploy: forge create --rpc-url <RPC_URL> --private-key <PRIVATE_KEY> src/Counter.sol:Counter"
-      fi
-      echo ""
-      
-      # Keep the terminal open
       exec bash
 
 # VS Code extensions
