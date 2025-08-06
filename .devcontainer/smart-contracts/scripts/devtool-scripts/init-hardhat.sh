@@ -2,8 +2,6 @@
 if ! compgen -G "$PROJECT_DIR/hardhat.config.*" > /dev/null; then
     echo -e "${YELLOW}📦 Initializing new Polkadot Hardhat project...${STYLE_END}"
     echo -e "${GREEN}✓ Copying project template files...${STYLE_END}"
-
-    # Copy all template files
     
     # Fetch template project
     REPO="https://github.com/paritytech/DevEx-DevRel.git"

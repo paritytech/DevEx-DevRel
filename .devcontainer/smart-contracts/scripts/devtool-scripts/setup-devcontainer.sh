@@ -63,42 +63,7 @@ if [ "$EMULATION_MODE" = "true" ]; then
     echo -e "${YELLOW}⚠️  Performance Warning: Running x86_64 binaries under emulation may be slower${STYLE_END}"
     echo -e "${YELLOW}   Consider using native ARM64 binaries for better performance${STYLE_END}"
 fi
-
 echo ""
-
-# Download Linux AMD64 binaries
-echo -e "${BLUE}🔧 Setting up binaries...${STYLE_END}"
-
-# Create binaries directory if it doesn't exist
-mkdir -p $PROJECT_DIR/binaries
-
-# Download binaries for Linux AMD64
-cd $PROJECT_DIR/binaries
-
-echo -e "${GREEN}Downloading Linux AMD64 binaries...${STYLE_END}"
-wget -q -O substrate-node "http://releases.parity.io/substrate-node/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/substrate-node" || {
-    echo -e "${YELLOW}Failed to download substrate-node, using dummy binary${STYLE_END}"
-    echo "#!/bin/bash" > substrate-node
-    echo "echo 'substrate-node dummy binary - download failed'" >> substrate-node
-}
-
-wget -q -O eth-rpc "http://releases.parity.io/eth-rpc/polkadot-stable2555-rc5/x86_64-unknown-linux-gnu/eth-rpc" || {
-    echo -e "${YELLOW}Failed to download eth-rpc, using dummy binary${STYLE_END}"
-    echo "#!/bin/bash" > eth-rpc
-    echo "echo 'eth-rpc dummy binary - download failed'" >> eth-rpc
-}
-
-# Check binary architecture if file command is available
-if command -v file >/dev/null 2>&1; then
-    echo -e "${BLUE}ℹ️  Downloaded binary information:${STYLE_END}"
-    file substrate-node 2>/dev/null | grep -q "ELF" && file substrate-node || echo "   substrate-node: not a valid binary"
-    file eth-rpc 2>/dev/null | grep -q "ELF" && file eth-rpc || echo "   eth-rpc: not a valid binary"
-fi
-
-# Make binaries executable
-chmod +x substrate-node eth-rpc
-
-echo -e "${GREEN}✓ Binaries setup complete${STYLE_END}"
 
 # Additional debugging for emulation mode
 if [ "$EMULATION_MODE" = "true" ]; then
