@@ -20,9 +20,15 @@ PUBLIC_ADDRESS=$(jq -r '.ss58PublicKey' ~/.address.json)
 SECRET=$(jq -r '.secretSeed' ~/.address.json)
 EVM_ADDRESS=$(cast wallet address --private-key "$SECRET")
 
-# Add keypair to hardhat config | TODO! Check if we're in hardhat or foundry
-npx hardhat vars set TEST_ACC_PRIVATE_KEY $SECRET
-cast wallet import --private-key $SECRET paseo --unsafe-password ""
+# Add keypair to hardhat config
+# TODO! Checking project type should be a function in 
+#       constants.sh (rename commons.sh) since we do this in multiple scripts
+if compgen -G "$PROJECT_DIR/hardhat.config.*" > /dev/null; then
+    npx hardhat vars set TEST_ACC_PRIVATE_KEY $SECRET
+elif compgen -G "$PROJECT_DIR/foundry.toml" > /dev/null; then
+    rm -rf "$HOME/.foundry/keystores/paseo"
+    cast wallet import --private-key $SECRET paseo --unsafe-password ""
+fi
 
 # Output Message
 LINK_START='\033]8;;https://faucet.polkadot.io/?parachain=1111\033\\'

@@ -1,32 +1,7 @@
-# Builder stage
-FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/rust:1-bullseye AS builder
-WORKDIR /
-RUN apt-get update && apt install --assume-yes git clang curl libssl-dev protobuf-compiler
-
-ARG USER_HOME=/home/vscode
-USER vscode
-WORKDIR $USER_HOME
-
-# Polkadot-SDK version to build binaries from. TODO! always grab latest by default
-ARG SDK_BRANCH=polkadot-stable2503-6
-
-# Setup environment for building Polkadot SDK binaries
-RUN rustup update stable && \
-    rustup default stable && \
-    rustup target add wasm32-unknown-unknown && \
-    rustup component add rust-src
-RUN git clone -q --depth 1 -b $SDK_BRANCH https://github.com/paritytech/polkadot-sdk.git
-WORKDIR $USER_HOME/polkadot-sdk
-
-# Build subkey binary
-RUN rustup toolchain install nightly --component rust-src && \
-    cargo +nightly build --release --package subkey
-
-# Final image
+# Image w/ precompiled subkey binary
+FROM --platform=linux/amd64 parity/subkey:latest AS subkey-bin
+# DevContainer Image
 FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/base:bullseye
-
-# User project mounts here
-WORKDIR /project
 
 # Install Node.js 22 and required tools
 RUN apt-get update && \
@@ -51,8 +26,8 @@ WORKDIR $USER_HOME
 RUN curl -L https://raw.githubusercontent.com/paritytech/foundry-polkadot/refs/heads/master/foundryup/install | bash && \
     $USER_HOME/.foundry/bin/foundryup-polkadot
 
-# Copy subkey binary from builder stage
-COPY --from=builder $USER_HOME/polkadot-sdk/target/release/subkey         /usr/local/bin/subkey
+# Grab subkey binary from precompiled image
+COPY --from=subkey-bin /usr/local/bin/subkey /usr/local/bin/
 
 # Copy devtool scripts for container initialization and management
 COPY --chmod=0755 ./scripts/devtool-scripts /usr/local/bin/devtool-scripts
