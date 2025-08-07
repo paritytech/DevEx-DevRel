@@ -1,5 +1,11 @@
-echo -e "${BLUE}🚀 Polkadot Smart Contract DevContainer Initializer${STYLE_END}"
+echo -e "${BLUE}🚀 Polkadot Smart Contract DevContainer${STYLE_END}"
 echo -e "${BLUE}============================================${STYLE_END}"
+
+# Exit early if not first setup
+if [ -d "$HOME/.devtools" ]; then
+  exit 0
+fi
+mkdir -p "$HOME/.devtools"
 
 # Determine project type (detect existing or prompt for (h)ardhat or (f)oundry)
 if compgen -G "$PROJECT_DIR/hardhat.config.*" > /dev/null; then

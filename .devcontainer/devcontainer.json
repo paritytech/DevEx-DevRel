@@ -8,8 +8,7 @@
   "containerEnv": {
     "PROJECT_DIR": "/project"
   },
-  "postCreateCommand": "bash -c 'devtools setup-devcontainer'",
-  "postAttachCommand": "bash -c 'devtools setup-keypair'",
+  "postAttachCommand": "bash -c 'devtools setup-devcontainer && devtools setup-keypair'",
   "customizations": {
     "vscode": {
       "extensions": [
