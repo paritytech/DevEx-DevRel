@@ -5,6 +5,7 @@ This document contains centralized links to all key DevEx/DevRel team materials 
 ## 📅 Team Notes and Plans
 - [DevEx team Weekly Updates](https://docs.google.com/document/d/19V6PSCZSS4xGWuneD0ODP-T1_2yheXDBiDNnA0J0C1U/edit?tab=t.0#heading=h.esy5h71l4xp5)
 - [DevEx/DevRel team roadmap till Q2-2026](https://docs.google.com/document/d/1lLroleVQp5Zt2MEcHrs9kY-jRgO6uINeOCkbkAezyeQ/edit?tab=t.0#heading=h.m2d9pm624ntr)
+- [DevEx – Draft OKRs Q3-Q4 2025](https://docs.google.com/document/d/1YYSxr4smYu6AllqRqEmQiIga9t2WkmSqhMEp3rrwMgU/edit?tab=t.0#heading=h.ryev6lvy9d4u)
 - [DevEX/DevRel dashboard](https://github.com/orgs/paritytech/projects/220/views/1)
 
 ## 🚀 Onboarding Materials
