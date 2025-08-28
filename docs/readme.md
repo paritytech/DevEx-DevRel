@@ -21,6 +21,8 @@ This document contains centralized links to all key DevEx/DevRel team materials 
 - [Design Doc for DevContainers (Smart Contracts)](https://docs.google.com/document/d/1Dn1zhAw6GjsW6pWq7z4P4mWnwQE6LAqfTjGf-Q6Idwk/edit?tab=t.0#heading=h.nvn9us4lsvki)
 - [Retreat Recap](https://docs.google.com/document/d/1mGnjYmU-rkv5he38vdGh1ojPDUcMOO5IgFUpKRhfE4Y/edit?tab=t.0#heading=h.63d7qupints)
 - [Brainstorming with Claude Code](https://docs.google.com/document/d/1sMKEoq-6jUoAiXgwq05VKFN0y-gy1ClPNpfrfBJDyfI/edit?tab=t.0#heading=h.d5jkmh5zkynl)
+- [Polkadot Comms Glossary](https://docs.google.com/document/d/1sHtnADncfMS9VFBjb3xWJsae8NUHjQNomVYNReelpM8/edit?usp=sharing)
+- [Polkadot Hub and Cloud One Pagers](https://docs.google.com/document/d/1VoRwXPzLGVS1UepNobQJN9FVm9QDaMKV4kGD2yH5c54/edit?usp=sharing)
 
 ## 📚 Tutorials and Testing
 - [Tutorials Worth Doing](https://docs.google.com/document/d/1ELQef09e0XsVcW5_GR-2HZ3y-PE3y1u9EBxyAVZuRYc/edit?tab=t.0#heading=h.z0x8clr2fyrf)
@@ -34,6 +36,8 @@ This document contains centralized links to all key DevEx/DevRel team materials 
 - [Polkadot Docs ](https://docs.polkadot.com/)
 - [Polkadot Docs github](https://github.com/polkadot-developers/polkadot-docs)
 - [Polkadot Docs IA (Parity)](https://docs.google.com/spreadsheets/d/1MGlyaFHD-1nDkBMhA_2Bo2UhOb5HwlQX8UaTtRwuoXU/edit?gid=534880564#gid=534880564)
+- [Polkadot Developer Docs GH issues](https://docs.google.com/document/d/1ywU1F-NwLgOaGy1PWFARaiDsv_tqBSKjvVaMCVpw23M/edit?usp=sharing)
+- [Requirements for new IA (ext)](https://docs.google.com/document/d/1vr6wG6U1sPLzTFQvWWKdcmPQ6PIObvikQipe8AGhqnQ/edit?usp=sharing)
 
 ## 💡 Feedback
 - [Hydration Notes (August 2025)](https://docs.google.com/document/d/15Pq9ky3NdR7NvGp1RaG5CGBU2nWcmEpgVc_4tInbzAI/edit?tab=t.0#heading=h.35wsyqg6sqsb)
