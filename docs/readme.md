@@ -7,6 +7,7 @@ This document contains centralized links to all key DevEx/DevRel team materials 
 - [DevEx/DevRel team roadmap till Q2-2026](https://docs.google.com/document/d/1lLroleVQp5Zt2MEcHrs9kY-jRgO6uINeOCkbkAezyeQ/edit?tab=t.0#heading=h.m2d9pm624ntr)
 - [DevEx – Draft OKRs Q3-Q4 2025](https://docs.google.com/document/d/1YYSxr4smYu6AllqRqEmQiIga9t2WkmSqhMEp3rrwMgU/edit?tab=t.0#heading=h.ryev6lvy9d4u)
 - [DevEX/DevRel dashboard](https://github.com/orgs/paritytech/projects/220/views/1)
+- [Karim's Polkadot CUJs](https://karimjedda.github.io/polkadot-cujs/)
 
 ## 🚀 Onboarding Materials
 - [Polkadot DevEx/DevRel Team Onboarding Guide](https://docs.google.com/document/d/1OcC_4I1aPoVhOfj1nykbWzljwy33H-xgs7pILqCnhno/edit?tab=t.0#heading=h.1tqqb480wumw)
