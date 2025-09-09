@@ -43,3 +43,4 @@ This document contains centralized links to all key DevEx/DevRel team materials 
 - [Hydration Notes (August 2025)](https://docs.google.com/document/d/15Pq9ky3NdR7NvGp1RaG5CGBU2nWcmEpgVc_4tInbzAI/edit?tab=t.0#heading=h.35wsyqg6sqsb)
 - [Smart Contracts Hackathon Feedback (April/May 2025)](https://forum.parity.io/t/smart-contracts-hackathon-feedback-april-may-2025/2514)
 - [Web3 kamp forum feedback (August 2025)](https://forum.parity.io/t/polkadot-at-the-web3-camp-recap-and-reflections/2577)
+- [Solution Engineering monthly meeting with parachains](https://github.com/paritytech/solution_engineering_repo/issues/78)
